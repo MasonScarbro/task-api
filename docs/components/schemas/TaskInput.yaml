@@ -1,0 +1,11 @@
+﻿type: object
+properties:
+  title:
+    type: string
+    example: 'Sample Task'
+  completed:
+    type: boolean
+    example: false
+required:
+  - title
+  - completed

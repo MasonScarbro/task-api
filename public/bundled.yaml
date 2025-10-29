@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: Task API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Tasks
+    description: Operations related to tasks
+paths:
+  /tasks:
+    get:
+      summary: Get all tasks
+      parameters:
+        - name: completed
+          in: query
+          required: false
+          schema:
+            type: boolean
+            example: true
+          description: Filter tasks by completion status
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            example: 10
+          description: Maximum number of tasks to return
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  typde: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: Sample Task
+                    completed:
+                      type: boolean
+                      example: false
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: The created task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    put:
+      summary: Update a task by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '200':
+          description: The updated task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+    delete:
+      summary: Delete a task by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Task deleted successfully
+components:
+  schemas:
+    TaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Sample Task
+        completed:
+          type: boolean
+          example: false
+      required:
+        - title
+        - completed
+    Task:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Sample Task
+        completed:
+          type: boolean
+          example: false
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Validation failed
+        details:
+          type: array
+          items:
+            type: string
+          example:
+            - Title is required
+            - Completed must be a boolean
+  responses:
+    BadRequest:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'

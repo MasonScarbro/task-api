@@ -1,0 +1,86 @@
+﻿get:
+  summary: 'Get all tasks'
+  parameters:
+    - name: completed
+      in: query
+      required: false
+      schema:
+        type: boolean
+        example: true
+      description: 'Filter tasks by completion status'
+    - name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+        example: 10
+      description: 'Maximum number of tasks to return'
+  responses:
+    '200':
+      description: 'A list of tasks'
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              typde: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                title:
+                  type: string
+                  example: 'Sample Task'
+                completed:
+                  type: boolean
+                  example: false
+post:
+  summary: 'Create a new task'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/Task.yaml'
+  responses:
+    '201':
+      description: 'The created task'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/Task.yaml'
+    '400':
+      $ref: '../components/responses/BadRequest.yaml'
+put:
+  summary: 'Update a task by ID'
+  parameters:
+    - in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/TaskInput.yaml'
+  responses:
+    '200':
+      description: 'The updated task'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/Task.yaml'
+delete:
+  summary: 'Delete a task by ID'
+  parameters:
+    - in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+  responses:
+    '204':
+      description: 'Task deleted successfully'
