@@ -98,6 +98,29 @@ paths:
       responses:
         '204':
           description: Task deleted successfully
+  /tasks/{id}:
+    get:
+      summary: Get a task by ID
+      description: Retrieve a single task by its unique identifier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: The unique identifier of the task
+      responses:
+        '200':
+          description: A single task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   schemas:
     TaskInput:
@@ -138,6 +161,14 @@ components:
           example:
             - Title is required
             - Completed must be a boolean
+    NotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Task not found
+      required:
+        - error
   responses:
     BadRequest:
       description: Invalid input
@@ -145,3 +176,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
